@@ -772,6 +772,7 @@ check_sys_bbrplus(){
 		else
 			echo -e "${Error} BBR内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
 		fi
+	fi
 }
 #检查安装bbr的系统要求
 check_sys_bbr(){
