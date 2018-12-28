@@ -230,15 +230,9 @@ startbbrmod(){
 startbbrplusmod(){
 	remove_all
 	if [[ "${release}" == "centos" ]]; then
-		yum install -y make gcc wget elfutils-libelf-devel
-		mkdir bbrmod && cd bbrmod
-		wget -N --no-check-certificate https://raw.githubusercontent.com/zxlhhyccc/bbrplus/master/tcp_bbrplus.c
-		echo "obj-m:=tcp_bbrplus.o" > Makefile
-		make -C /lib/modules/$(uname -r)/build M=`pwd` modules CC=/usr/bin/gcc
-		chmod +x ./tcp_bbrplus.ko
-		cp -rf ./tcp_bbrplus.ko /lib/modules/$(uname -r)/kernel/net/ipv4
-		insmod tcp_bbrplus.ko
-		depmod -a
+        echo -e "启用模块..."
+	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+	echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
 	else
 		apt-get update
 		if [[ "${release}" == "ubuntu" && "${version}" = "14" ]]; then
