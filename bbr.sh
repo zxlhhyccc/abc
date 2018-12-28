@@ -231,8 +231,6 @@ startbbrplusmod(){
 	remove_all
 	if [[ "${release}" == "centos" ]]; then
         echo -e "启用模块..."
-	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-	echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
 	else
 		apt-get update
 		if [[ "${release}" == "ubuntu" && "${version}" = "14" ]]; then
