@@ -774,6 +774,7 @@ check_sys_bbrplus(){
 		fi
 	fi
 }
+
 #检查安装bbr的系统要求
 check_sys_bbr(){
 	check_version
