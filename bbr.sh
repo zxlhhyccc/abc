@@ -561,7 +561,7 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
  ${Green_font_prefix}13.${Font_color_suffix} 设置root用户登录
  ${Green_font_prefix}14.${Font_color_suffix} 安装libssl1.1(ubuntu16.04需先安装否则有报错)
  ${Green_font_prefix}15.${Font_color_suffix} 安装nginx(安装nginx1.14及以上支持TLSv1.3)
- ${Green_font_prefix}15.${Font_color_suffix} 安装linux-headers 内核（centos7专用）
+ ${Green_font_prefix}16.${Font_color_suffix} 安装linux-headers 内核（centos7专用）
  ${Green_font_prefix}a.${Font_color_suffix}  退出脚本
 ————————————————————————————————" && echo
 
