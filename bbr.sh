@@ -21,14 +21,15 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 #安装BBR内核
 installbbr(){
 	if [[ "${release}" == "centos" ]]; then
-	kernel_version="4.14.15"
-		rpm --import http://${github}/RPM-GPG-KEY-elrepo.org
-		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-4.14.15-1.el7.elrepo.x86_64.rpm
+	kernel_version="4.14.90"
+		yum install -y https://github.com/zxlhhyccc/bbrplus/raw/master/centos7/x86_64/kernel-4.14.90.rpm
 		yum remove -y kernel-headers
-		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-headers-4.14.15-1.el7.elrepo.x86_64.rpm
-		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-devel-4.14.15-1.el7.elrepo.x86_64.rpm
-		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-tools-libs-4.14.15-1.el7.elrepo.x86_64.rpm
-		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-tools-4.14.15-1.el7.elrepo.x86_64.rpm
+		yum -y install epel-release
+		sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
+		rpm --import http://${github}/RPM-GPG-KEY-elrepo.org
+		rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+		yum --disablerepo="*" --enablerepo="elrepo-kernel-" list available
+		yum -y --enablerepo=elrepo-kernel install kernel-ml-headers kernel-ml-devel
 	elif [[ "${release}" == "debian" ]]; then
 	kernel_version="4.9.147"
 		mkdir bbr && cd bbr
