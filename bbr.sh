@@ -24,13 +24,6 @@ installbbr(){
 	kernel_version="4.14.90"
 		yum install -y https://github.com/zxlhhyccc/bbrplus/raw/master/centos7/x86_64/kernel-4.14.90.rpm
 		yum remove -y kernel-headers
-	kernel-1_version="4.20.0"
-		yum -y install epel-release
-		sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
-		rpm --import http://${github}/RPM-GPG-KEY-elrepo.org
-		rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
-		yum --disablerepo="*" --enablerepo="elrepo-kernel-" list available
-		yum -y --enablerepo=elrepo-kernel install kernel-ml-headers kernel-ml-devel
 	elif [[ "${release}" == "debian" ]]; then
 	kernel_version="4.9.147"
 		mkdir bbr && cd bbr
@@ -66,6 +59,17 @@ installbbr(){
 		reboot
 	fi
 }
+
+#安装BBR内核
+conetos-installbbr(){
+	if [[ "${release}" == "centos" ]]; then
+	kernel-1_version="4.20.0"
+		yum -y install epel-release
+		sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
+		rpm --import http://${github}/RPM-GPG-KEY-elrepo.org
+		rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+		yum --disablerepo="*" --enablerepo="elrepo-kernel-" list available
+		yum -y --enablerepo=elrepo-kernel install kernel-ml-headers kernel-ml-devel
 
 #安装libssl1.1
 install_libssl1.1(){
@@ -555,6 +559,7 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
  ${Green_font_prefix}13.${Font_color_suffix} 设置root用户登录
  ${Green_font_prefix}14.${Font_color_suffix} 安装libssl1.1(ubuntu16.04需先安装否则有报错)
  ${Green_font_prefix}15.${Font_color_suffix} 安装nginx(安装nginx1.14及以上支持TLSv1.3)
+ ${Green_font_prefix}15.${Font_color_suffix} 安装linux-headers 内核（centos7专用）
  ${Green_font_prefix}a.${Font_color_suffix}  退出脚本
 ————————————————————————————————" && echo
 
@@ -615,6 +620,9 @@ case "$num" in
 	;;
 	15)
 	install_nginx
+	;;
+	16)
+	conetos-installbbr
 	;;
 	a)
 	exit 1
