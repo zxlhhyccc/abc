@@ -70,6 +70,8 @@ conetos-installbbr(){
 		rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
 		yum --disablerepo="*" --enablerepo="elrepo-kernel-" list available
 		yum -y --enablerepo=elrepo-kernel install kernel-ml-headers kernel-ml-devel
+	fi
+}
 
 #安装libssl1.1
 install_libssl1.1(){
