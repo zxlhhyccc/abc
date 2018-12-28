@@ -61,7 +61,7 @@ installbbr(){
 }
 
 #安装BBR内核
-conetos-installbbr(){
+centos-installbbr(){
 	if [[ "${release}" == "centos" ]]; then
 	kernel-1_version="4.20.0"
 		yum -y install epel-release
@@ -573,7 +573,7 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
 		
 	fi
 echo
-read -p " 请输入数字 [0-15,a]:" num
+read -p " 请输入数字 [0-16,a]:" num
 case "$num" in
 	0)
 	Update_Shell
@@ -624,14 +624,14 @@ case "$num" in
 	install_nginx
 	;;
 	16)
-	conetos-installbbr
+	centos-installbbr
 	;;
 	a)
 	exit 1
 	;;
 	*)
 	clear
-	echo -e "${Error}:请输入正确数字 [0-15,a]"
+	echo -e "${Error}:请输入正确数字 [0-16,a]"
 	sleep 5s
 	start_menu
 	;;
@@ -642,7 +642,7 @@ esac
 #删除多余内核
 detele_kernel(){
 	if [[ "${release}" == "centos" ]]; then
-		rpm_total=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "${kernel-1_version}" | grep -v "noarch" | wc -l`
+		rpm_total=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | wc -l`
 		if [ "${rpm_total}" > "1" ]; then
 			echo -e "检测到 ${rpm_total} 个其余内核，开始卸载..."
 			for((integer = 1; integer <= ${rpm_total}; integer++)); do
