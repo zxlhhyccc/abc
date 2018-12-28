@@ -21,14 +21,14 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 #安装BBR内核
 installbbr(){
 	if [[ "${release}" == "centos" ]]; then
-	kernel_version="4.20.0"
+	kernel_version="4.14.15"
 		rpm --import http://${github}/RPM-GPG-KEY-elrepo.org
-		yum install -y http://${github}/kernel/${release}/kernel-ml-${kernel_version}.rpm
+		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-4.14.15-1.el7.elrepo.x86_64.rpm
 		yum remove -y kernel-headers
-		yum install -y http://${github}/kernel/${release}/kernel-ml-headers-${kernel_version}.rpm
-		yum install -y http://${github}/kernel/${release}/kernel-ml-devel-${kernel_version}.rpm
-		yum install -y http://${github}/kernel/${release}/kernel-ml-tools-libs-${kernel_version}.rpm
-		yum install -y http://${github}/kernel/${release}/kernel-ml-tools-${kernel_version}.rpm
+		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-headers-4.14.15-1.el7.elrepo.x86_64.rpm
+		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-devel-4.14.15-1.el7.elrepo.x86_64.rpm
+		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-tools-libs-4.14.15-1.el7.elrepo.x86_64.rpm
+		yum install -y http://mirror.rc.usf.edu/compute_lock/elrepo/kernel/el7/x86_64/RPMS/kernel-ml-tools-4.14.15-1.el7.elrepo.x86_64.rpm
 	elif [[ "${release}" == "debian" ]]; then
 	kernel_version="4.9.147"
 		mkdir bbr && cd bbr
@@ -224,7 +224,7 @@ startbbrplusmod(){
 	if [[ "${release}" == "centos" ]]; then
 		yum install -y make gcc wget elfutils-libelf-devel
 		mkdir bbrmod && cd bbrmod
-		wget -N --no-check-certificate https://raw.githubusercontent.com/zxlhhyccc/TCP_BBR/master/v4.20-rc/tcp_bbrplus.c
+		wget -N --no-check-certificate https://raw.githubusercontent.com/zxlhhyccc/TCP_BBR/master/v4.14/tcp_bbrplus.c
 		echo "obj-m:=tcp_bbrplus.o" > Makefile
 		make -C /lib/modules/$(uname -r)/build M=`pwd` modules CC=/usr/bin/gcc
 		chmod +x ./tcp_bbrplus.ko
