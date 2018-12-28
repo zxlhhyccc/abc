@@ -24,6 +24,7 @@ installbbr(){
 	kernel_version="4.14.90"
 		yum install -y https://github.com/zxlhhyccc/bbrplus/raw/master/centos7/x86_64/kernel-4.14.90.rpm
 		yum remove -y kernel-headers
+	kernel-1_version="4.20.0"
 		yum -y install epel-release
 		sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
 		rpm --import http://${github}/RPM-GPG-KEY-elrepo.org
@@ -631,7 +632,7 @@ esac
 #删除多余内核
 detele_kernel(){
 	if [[ "${release}" == "centos" ]]; then
-		rpm_total=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | wc -l`
+		rpm_total=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "${kernel-1_version}" | grep -v "noarch" | wc -l`
 		if [ "${rpm_total}" > "1" ]; then
 			echo -e "检测到 ${rpm_total} 个其余内核，开始卸载..."
 			for((integer = 1; integer <= ${rpm_total}; integer++)); do
