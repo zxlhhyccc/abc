@@ -18,12 +18,35 @@ Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
-#安装BBR内核
-installbbr(){
+#安装BBRPLUS内核
+installbbrplus(){
 	if [[ "${release}" == "centos" ]]; then
 	kernel_version="4.14.90"
 		yum install -y https://github.com/zxlhhyccc/bbrplus/raw/master/centos7/x86_64/kernel-4.14.90.rpm
 		yum remove -y kernel-headers
+	fi
+	detele_kernel
+	BBR_grub
+	echo -e "${Tip} 重启VPS后，请重新运行脚本开启${Red_font_prefix}BBR/BBR魔改版${Font_color_suffix}"
+	stty erase '^H' && read -p "需要重启VPS后，才能开启BBR/BBR魔改版，是否现在重启 ? [Y/n] :" yn
+	[ -z "${yn}" ] && yn="y"
+	if [[ $yn == [Yy] ]]; then
+		echo -e "${Info} VPS 重启中..."
+		reboot
+	fi
+}
+
+#安装BBR内核
+installbbr(){
+	if [[ "${release}" == "centos" ]]; then
+	kernel_version="4.20.0"
+		rpm --import http://${github}/RPM-GPG-KEY-elrepo.org
+		yum install -y http://${github}/kernel/${release}/kernel-ml-${kernel_version}.rpm
+		yum remove -y kernel-headers
+		yum install -y http://${github}/kernel/${release}/kernel-ml-headers-${kernel_version}.rpm
+		yum install -y http://${github}/kernel/${release}/kernel-ml-devel-${kernel_version}.rpm
+		yum install -y http://${github}/kernel/${release}/kernel-ml-tools-libs-${kernel_version}.rpm
+		yum install -y http://${github}/kernel/${release}/kernel-ml-tools-${kernel_version}.rpm
 	elif [[ "${release}" == "debian" ]]; then
 	kernel_version="4.9.147"
 		mkdir bbr && cd bbr
@@ -63,7 +86,7 @@ installbbr(){
 #安装BBR内核
 centos-installbbr(){
 	if [[ "${release}" == "centos" ]]; then
-	kernel-1_version="4.20.0"
+	kernel_version="4.20.0"
 		yum -y install epel-release
 		sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
 		rpm --import http://${github}/RPM-GPG-KEY-elrepo.org
@@ -537,24 +560,25 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
  ${Green_font_prefix}0.${Font_color_suffix} 升级脚本(请不要升级脚本,否则需重新配置)
 ————————————内核管理————————————
  ${Green_font_prefix}1.${Font_color_suffix} 安装 BBR/BBR魔改版内核
- ${Green_font_prefix}2.${Font_color_suffix} 安装 Lotserver(锐速)内核(仅支持低版本内核)
+ ${Green_font_prefix}2.${Font_color_suffix} 安装 BBR/BBRPULS内核(centOS7专用)
+ ${Green_font_prefix}3.${Font_color_suffix} 安装 Lotserver(锐速)内核(仅支持低版本内核)
 ————————————加速管理————————————
- ${Green_font_prefix}3.${Font_color_suffix} 使用BBR加速
- ${Green_font_prefix}4.${Font_color_suffix} 使用BBR魔改版加速(centos7/debian9使用)
- ${Green_font_prefix}5.${Font_color_suffix} 使用BBRPLUS加速(centos7/debian9使用)
- ${Green_font_prefix}6.${Font_color_suffix} 使用暴力BBR魔改版加速(不支持部分系统，centos7/debian9使用)
- ${Green_font_prefix}7.${Font_color_suffix} 使用Lotserver(锐速)加速(仅支持低版本内核)
- ${Green_font_prefix}8.${Font_color_suffix} 使用BBR魔改版加速(ubuntu16.04/18.04/18.10使用)
- ${Green_font_prefix}9.${Font_color_suffix} 使用BBRPLUS加速(ubuntu16.04/18.04/18.10使用)
- ${Green_font_prefix}10.${Font_color_suffix} 使用暴力BBR魔改版加速(不支持部分系统，ubuntu16.04/18.04/18.10使用)
+ ${Green_font_prefix}4.${Font_color_suffix} 使用BBR加速
+ ${Green_font_prefix}5.${Font_color_suffix} 使用BBR魔改版加速(centos7/debian9使用)
+ ${Green_font_prefix}6.${Font_color_suffix} 使用BBRPLUS加速(centos7/debian9使用)
+ ${Green_font_prefix}7.${Font_color_suffix} 使用暴力BBR魔改版加速(不支持部分系统，centos7/debian9使用)
+ ${Green_font_prefix}8.${Font_color_suffix} 使用Lotserver(锐速)加速(仅支持低版本内核)
+ ${Green_font_prefix}9.${Font_color_suffix} 使用BBR魔改版加速(ubuntu16.04/18.04/18.10使用)
+ ${Green_font_prefix}10.${Font_color_suffix} 使用BBRPLUS加速(ubuntu16.04/18.04/18.10使用)
+ ${Green_font_prefix}11.${Font_color_suffix} 使用暴力BBR魔改版加速(不支持部分系统，ubuntu16.04/18.04/18.10使用)
 ————————————杂项管理————————————
- ${Green_font_prefix}11.${Font_color_suffix} 卸载全部加速
- ${Green_font_prefix}12.${Font_color_suffix} 系统配置优化
- ${Green_font_prefix}13.${Font_color_suffix} 设置root用户登录
- ${Green_font_prefix}14.${Font_color_suffix} 安装libssl1.1(ubuntu16.04需先安装否则有报错)
- ${Green_font_prefix}15.${Font_color_suffix} 安装nginx(安装nginx1.14及以上支持TLSv1.3)
- ${Green_font_prefix}16.${Font_color_suffix} 安装linux-headers 内核（centos7专用）
- ${Green_font_prefix}a.${Font_color_suffix}  退出脚本
+ ${Green_font_prefix}12.${Font_color_suffix} 卸载全部加速
+ ${Green_font_prefix}13.${Font_color_suffix} 系统配置优化
+ ${Green_font_prefix}14.${Font_color_suffix} 设置root用户登录
+ ${Green_font_prefix}15.${Font_color_suffix} 安装libssl1.1(ubuntu16.04需先安装否则有报错)
+ ${Green_font_prefix}16.${Font_color_suffix} 安装nginx(安装nginx1.14及以上支持TLSv1.3)
+ ${Green_font_prefix}17.${Font_color_suffix} 安装linux-headers的BBRPLUS用内核（centos7专用，搭建wireguard需安装）
+ ${Green_font_prefix}18.${Font_color_suffix}  退出脚本
 ————————————————————————————————" && echo
 
 	check_status
@@ -565,7 +589,7 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
 		
 	fi
 echo
-read -p " 请输入数字 [0-16,a]:" num
+read -p " 请输入数字 [0-18]:" num
 case "$num" in
 	0)
 	Update_Shell
@@ -574,56 +598,59 @@ case "$num" in
 	check_sys_bbr
 	;;
 	2)
-	check_sys_Lotsever
+	check_sys_bbrplus
 	;;
 	3)
-	startbbr
+	check_sys_Lotsever
 	;;
 	4)
-	startbbrmod
+	startbbr
 	;;
 	5)
-	startbbrplusmod
+	startbbrmod
 	;;
 	6)
-	startbbrmod_nanqinlang
+	startbbrplusmod
 	;;
 	7)
-	startlotserver
+	startbbrmod_nanqinlang
 	;;
 	8)
+	startlotserver
+	;;
+	9)
 	startbbrmod_ubuntu18.04
 	;;
-        9)
+        10)
 	startbbrpulsmod_ubuntu18.04
 	;;
-	10)
+	11)
 	startbbrmod_nanqinlang_ubuntu18.04
 	;;
-	11)
+	12)
 	remove_all
 	;;
-	12)
+	13)
 	optimizing_system
 	;;
-	13)
+	14)
 	Modify_root
 	;;
-	14)
+	15)
 	install_libssl1.1
 	;;
-	15)
+	16)
 	install_nginx
 	;;
-	16)
+	17)
 	centos-installbbr
 	;;
-	a)
+	18)
 	exit 1
 	;;
 	*)
 	clear
-	echo -e "${Error}:请输入正确数字 [0-16,a]"
+	echo -e "${Error}:请输入正确数字 [0-18]"
 	sleep 5s
 	start_menu
 	;;
@@ -736,6 +763,16 @@ check_version(){
 	fi
 }
 
+#检查安装bbr的系统要求
+check_sys_bbrplus(){
+	check_version
+	if [[ "${release}" == "centos" ]]; then
+		if [[ ${version} -ge "6" ]]; then
+			installbbrplus
+		else
+			echo -e "${Error} BBR内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+		fi
+}
 #检查安装bbr的系统要求
 check_sys_bbr(){
 	check_version
