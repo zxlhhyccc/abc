@@ -622,7 +622,7 @@ case "$num" in
 	startbbrmod_ubuntu18.04
 	;;
         10)
-	startbbrpulsmod_ubuntu18.04
+	startbbrplusmod_ubuntu18.04
 	;;
 	11)
 	startbbrmod_nanqinlang_ubuntu18.04
