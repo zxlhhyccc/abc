@@ -319,7 +319,7 @@ startbbrplusmod_ubuntu18.04(){
 	        fi
 	        apt-get -y install make gcc libelf-dev
 		mkdir bbrmod && cd bbrmod
-		wget -N --no-check-certificate https://raw.githubusercontent.com/zxlhhyccc/TCP_BBR/master/v4.20-rc/tcp_bbrplus.c
+		wget -N --no-check-certificate https://raw.githubusercontent.com/zxlhhyccc/TCP_BBR/master/v4.15/tcp_bbrplus.c
 		echo "obj-m := tcp_bbrplus.o" > Makefile
 		make -C /lib/modules/$(uname -r)/build M=`pwd` modules CC=/usr/bin/gcc
 		install tcp_bbrplus.ko /lib/modules/$(uname -r)/kernel
