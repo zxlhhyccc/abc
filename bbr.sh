@@ -498,7 +498,7 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
  ${Green_font_prefix}12.${Font_color_suffix} 系统配置优化
  ${Green_font_prefix}13.${Font_color_suffix} 设置root用户登录
  ${Green_font_prefix}14.${Font_color_suffix} 安装nginx(安装nginx1.14及以上支持TLSv1.3)
- ${Green_font_prefix}15.${Font_color_suffix}  退出脚本
+ ${Green_font_prefix}15.${Font_color_suffix} 退出脚本
 ————————————————————————————————" && echo
 
 	check_status
@@ -681,8 +681,22 @@ check_sys_bbrplus(){
 		if [[ ${version} -ge "6" ]]; then
 			installbbrplus
 		else
-			echo -e "${Error} BBR内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+			echo -e "${Error} BBRplus内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
 		fi
+	elif [[ "${release}" == "debian" ]]; then
+		if [[ ${version} -ge "8" ]]; then
+			installbbrplus
+		else
+			echo -e "${Error} BBRplus内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+		fi
+	elif [[ "${release}" == "ubuntu" ]]; then
+		if [[ ${version} -ge "14" ]]; then
+			installbbrplus
+		else
+			echo -e "${Error} BBRplus内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+		fi
+	else
+		echo -e "${Error} BBRplus内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
 	fi
 }
 
@@ -799,12 +813,14 @@ check_status(){
 			else 
 				run_status="暴力BBR魔改版启动失败"
 			fi
-		elif [[ ${run_status} == "bbrplus" ]]; then
+	elif [[ ${kernel_status} == "BBRplus" ]]; then
+		run_status=`grep "net.ipv4.tcp_congestion_control" /etc/sysctl.conf | awk -F "=" '{print $2}'`
+		if [[ ${run_status} == "bbrplus" ]]; then
 			run_status=`lsmod | grep "bbrplus" | awk '{print $1}'`
 			if [[ ${run_status} == "tcp_bbrplus" ]]; then
-				run_status="BBRPLUS启动成功"
-		else
-				run_status="BBRPLUS启动失败"
+				run_status="BBRplus启动成功"
+			else 
+				run_status="BBRplus启动失败"
 			fi
 		else 
 			run_status="未安装加速模块"
