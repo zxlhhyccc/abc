@@ -483,7 +483,7 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
  ${Green_font_prefix}0.${Font_color_suffix} 升级脚本(请不要升级脚本,否则需重新配置)
 ————————————内核管理————————————
  ${Green_font_prefix}1.${Font_color_suffix} 安装 BBR/BBR魔改版内核
- ${Green_font_prefix}2.${Font_color_suffix} 安装 BBR/BBRPULS内核
+ ${Green_font_prefix}2.${Font_color_suffix} 安装 BBR/BBRPULS内核(centOS7/debian9/ubuntu14.04/16.04使用)
  ${Green_font_prefix}3.${Font_color_suffix} 安装 Lotserver(锐速)内核(仅支持低版本内核)
 ————————————加速管理————————————
  ${Green_font_prefix}4.${Font_color_suffix} 使用BBR加速
