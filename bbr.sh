@@ -58,7 +58,7 @@ installbbr(){
 	elif [[ "${release}" == "debian" ]]; then
 	kernel_version="4.9.147"
 		mkdir bbr && cd bbr
-		wget -N --no-check-certificate -O libssl1.1_amd64.deb http://security-cdn.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.0j-1~deb9u1_amd64.deb
+		wget -N --no-check-certificate -O libssl1.1_amd64.deb http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.0j-1~deb9u1_amd64.deb
 		wget -N --no-check-certificate -O linux-headers_all.deb http://${github}/kernel/${release}/linux-headers-${kernel_version}_all.deb
 		wget -N --no-check-certificate -O linux-headers_amd64.deb http://${github}/kernel/${release}/linux-headers-${kernel_version}-generic_amd64.deb
 		wget -N --no-check-certificate -O linux-image-generic_amd64.deb http://${github}/kernel/${release}/linux-image-${kernel_version}-generic_amd64.deb
@@ -71,7 +71,7 @@ installbbr(){
 	elif [[ "${release}" == "ubuntu" ]]; then
 	kernel_version="4.19.11"
 	       mkdir bbr && cd bbr
-	       wget -N --no-check-certificate -O libssl1.1_amd64.deb http://security-cdn.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.0j-1~deb9u1_amd64.deb
+	       wget -N --no-check-certificate -O libssl1.1_amd64.deb http://security.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.0j-1~deb9u1_amd64.deb
 	       wget -N --no-check-certificate -O linux-headers_all.deb http://${github}/kernel/${release}/linux-headers-${kernel_version}_all.deb
 	       wget -N --no-check-certificate -O linux-headers_amd64.deb http://${github}/kernel/${release}/linux-headers-${kernel_version}-generic_amd64.deb
 	       wget -N --no-check-certificate -O linux-modules-generic_amd64.deb http://${github}/kernel/${release}/linux-modules-${kernel_version}-generic_amd64.deb
