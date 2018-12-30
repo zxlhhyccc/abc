@@ -774,13 +774,14 @@ check_status(){
 	kernel_version=`uname -r | awk -F "-" '{print $1}'`
 	if [[ ${kernel_version} = "4.14.90" ]]; then
 		kernel_status="BBRplus"
-	elif [[ `echo ${kernel_version} | awk -F'.' '{print $1}'` == "4" ]] && [[ `echo ${kernel_version} | awk -F'.' '{print $2}'` -ge 9 ]]; then
-		kernel_status="BBR"
 	elif [[ ${kernel_version} = "3.10.0" || ${kernel_version} = "3.16.0" || ${kernel_version} = "3.2.0" || ${kernel_version} = "4.4.0" || ${kernel_version} = "3.13.0"  || ${kernel_version} = "2.6.32" ]]; then
 		kernel_status="Lotserver"
+	elif [[ `echo ${kernel_version} | awk -F'.' '{print $1}'` == "4" ]] && [[ `echo ${kernel_version} | awk -F'.' '{print $2}'` -ge 9 ]]; then
+		kernel_status="BBR"
 	else 
 		kernel_status="noinstall"
 	fi
+
 	if [[ ${kernel_status} == "Lotserver" ]]; then
 		if [[ -e /appex/bin/serverSpeeder.sh ]]; then
 			run_status=`bash /appex/bin/serverSpeeder.sh status | grep "ServerSpeeder" | awk  '{print $3}'`
@@ -815,6 +816,9 @@ check_status(){
 			else 
 				run_status="暴力BBR魔改版启动失败"
 			fi
+		else 
+			run_status="未安装加速模块"
+		fi
 	elif [[ ${kernel_status} == "BBRplus" ]]; then
 		run_status=`grep "net.ipv4.tcp_congestion_control" /etc/sysctl.conf | awk -F "=" '{print $2}'`
 		if [[ ${run_status} == "bbrplus" ]]; then
