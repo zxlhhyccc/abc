@@ -26,10 +26,10 @@ installbbrplus(){
 		yum remove -y kernel-headers
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		mkdir bbrplus && cd bbrplus
-		wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/${bit}/linux-headers-${kernel_version}.deb
-		wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/${bit}/linux-image-${kernel_version}.deb
-		dpkg -i linux-headers-${kernel_version}.deb
-		dpkg -i linux-image-${kernel_version}.deb
+		wget -N --no-check-certificate https://github.com/cx9208/Linux-NetSpeed/raw/master/bbrplus/debian-ubuntu/x64/linux-headers-4.14.90.deb
+		wget -N --no-check-certificate https://github.com/cx9208/Linux-NetSpeed/raw/master/bbrplus/debian-ubuntu/x64/linux-image-4.14.90.deb
+		dpkg -i linux-headers-4.14.90.deb
+		dpkg -i linux-image-4.14.90.deb
 		cd .. && rm -rf bbrplus
 	fi
 	
@@ -58,10 +58,12 @@ installbbr(){
 	elif [[ "${release}" == "debian" ]]; then
 	kernel_version="4.9.147"
 		mkdir bbr && cd bbr
+		wget -N --no-check-certificate -O libssl1.1_amd64.deb http://security-cdn.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.0j-1~deb9u1_amd64.deb
 		wget -N --no-check-certificate -O linux-headers_all.deb http://${github}/kernel/${release}/linux-headers-${kernel_version}_all.deb
 		wget -N --no-check-certificate -O linux-headers_amd64.deb http://${github}/kernel/${release}/linux-headers-${kernel_version}-generic_amd64.deb
 		wget -N --no-check-certificate -O linux-image-generic_amd64.deb http://${github}/kernel/${release}/linux-image-${kernel_version}-generic_amd64.deb
 		
+		dpkg -i libssl1.1_amd64.deb
 		dpkg -i linux-headers_all.deb
 		dpkg -i linux-headers_amd64.deb
 		dpkg -i linux-image-generic_amd64.deb
@@ -69,11 +71,13 @@ installbbr(){
 	elif [[ "${release}" == "ubuntu" ]]; then
 	kernel_version="4.19.11"
 	       mkdir bbr && cd bbr
+	       wget -N --no-check-certificate -O libssl1.1_amd64.deb http://security-cdn.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.1_1.1.0j-1~deb9u1_amd64.deb
 	       wget -N --no-check-certificate -O linux-headers_all.deb http://${github}/kernel/${release}/linux-headers-${kernel_version}_all.deb
 	       wget -N --no-check-certificate -O linux-headers_amd64.deb http://${github}/kernel/${release}/linux-headers-${kernel_version}-generic_amd64.deb
 	       wget -N --no-check-certificate -O linux-modules-generic_amd64.deb http://${github}/kernel/${release}/linux-modules-${kernel_version}-generic_amd64.deb
 	       wget -N --no-check-certificate -O linux-image-generic_amd64.deb http://${github}/kernel/${release}/linux-image-unsigned-${kernel_version}-generic_amd64.deb
 	       
+	       dpkg -i libssl1.1_amd64.deb
 	       dpkg -i linux-headers_all.deb
 	       dpkg -i linux-headers_amd64.deb
 	       dpkg -i linux-modules-generic_amd64.deb
@@ -89,29 +93,6 @@ installbbr(){
 		echo -e "${Info} VPS 重启中..."
 		reboot
 	fi
-}
-
-#安装BBR内核
-centos-installbbr(){
-	if [[ "${release}" == "centos" ]]; then
-	kernel_version="4.20.0"
-		yum -y install epel-release
-		sed -i "0,/enabled=0/s//enabled=1/" /etc/yum.repos.d/epel.repo
-		rpm --import http://${github}/RPM-GPG-KEY-elrepo.org
-		rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
-		yum --disablerepo="*" --enablerepo="elrepo-kernel-" list available
-		yum -y --enablerepo=elrepo-kernel install kernel-ml-headers kernel-ml-devel
-	fi
-}
-
-#安装libssl1.1
-install_libssl1.1(){
-        if [[ "${release}" == "ubuntu" ]]; then
-        mkdir libssl && cd libssl
-        wget -N --no-check-certificate -O libssl1.1_amd64.deb http://${github}/libssl1.1_1.1.0g-2ubuntu4.1_amd64.deb
-        dpkg -i libssl1.1_amd64.deb
-        cd .. && rm -rf libssl  
-        fi
 }
 
 # 一键启用root帐号命令
@@ -266,6 +247,7 @@ startbbrplusmod(){
 	sysctl -p
 	echo -e "${Info}BBRPLUS启动成功！"
 }
+
 #编译并启用BBR魔改(ubuntu18.04)
 startbbrmod_ubuntu18.04(){
 	remove_all
@@ -295,35 +277,7 @@ startbbrmod_ubuntu18.04(){
 	echo -e "${Info}魔改版BBR启动成功！"
 }
 
-#编译并启用BBRPULS(ubuntu18.04)
-startbbrplusmod_ubuntu18.04(){
-	remove_all
-	if [[ "${release}" == "ubuntu" ]]; then
-		apt-get update
-	        if [[ "${release}" == "ubuntu" && "${version}" = "14" ]]; then
-		apt-get -y install build-essential
-		apt-get -y install software-properties-common
-		add-apt-repository ppa:ubuntu-toolchain-r/test -y
-		apt-get update
-	        fi
-	        apt-get -y install make gcc libelf-dev
-		mkdir bbrmod && cd bbrmod
-		wget -N --no-check-certificate https://raw.githubusercontent.com/zxlhhyccc/TCP_BBR/master/v4.15/tcp_bbrplus.c
-		echo "obj-m := tcp_bbrplus.o" > Makefile
-		make -C /lib/modules/$(uname -r)/build M=`pwd` modules CC=/usr/bin/gcc
-		install tcp_bbrplus.ko /lib/modules/$(uname -r)/kernel
-		cp -rf ./tcp_bbrplus.ko /lib/modules/$(uname -r)/kernel/net/ipv4
-		depmod -a
-	fi
-
-	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
-	echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
-	sysctl -p
-	cd .. && rm -rf bbrmod
-	echo -e "${Info}BBRPLUS启动成功！"
-}
-
-#编译并启用BBR魔改(cent0s7/debian9)
+#编译并启用BBR暴力魔改(cent0s7/debian9)
 startbbrmod_nanqinlang(){
 	remove_all
 	if [[ "${release}" == "centos" ]]; then
@@ -361,7 +315,7 @@ startbbrmod_nanqinlang(){
     cd .. && rm -rf bbrmod
 	echo -e "${Info}魔改版BBR启动成功！"
 }
-#编译并启用BBR魔改(ubuntu18.04)
+#编译并启用BBR暴力魔改(ubuntu18.04)
 startbbrmod_nanqinlang_ubuntu18.04(){
 	remove_all
 	if [[ "${release}" == "ubuntu" ]]; then
@@ -455,57 +409,37 @@ remove_all(){
 
 #优化系统配置
 optimizing_system(){
-        sed -i '/fs.file-max/d' /etc/sysctl.conf
+	sed -i '/fs.file-max/d' /etc/sysctl.conf
 	sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
-        sed -i '/net.core.rmem_max/d' /etc/sysctl.conf
-        sed -i '/net.core.wmem_max/d' /etc/sysctl.conf
-        sed -i '/net.core.netdev_max_backlog/d' /etc/sysctl.conf
-        sed -i '/net.core.somaxconn/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_syncookies/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_tw_reuse/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_tw_recycle/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_fin_timeout/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_keepalive_time/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_max_syn_backlog/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_max_tw_buckets/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_fastopen/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.route.gc_timeout/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_syn_retries/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_synack_retries/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_mtu_probing/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_max_orphans/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_rmem/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.tcp_wmem/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_syncookies/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_fin_timeout/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_tw_reuse/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_syn_backlog/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_tw_buckets/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.route.gc_timeout/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_synack_retries/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_syn_retries/d' /etc/sysctl.conf
+	sed -i '/net.core.somaxconn/d' /etc/sysctl.conf
+	sed -i '/net.core.netdev_max_backlog/d' /etc/sysctl.conf
 	sed -i '/net.ipv4.tcp_timestamps/d' /etc/sysctl.conf
-        sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
-        sed -i '/vm.swappiness/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_orphans/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
 	echo "fs.file-max = 1000000
 fs.inotify.max_user_instances = 8192
-net.core.rmem_max = 67108864
-net.core.wmem_max = 67108864
-net.core.netdev_max_backlog = 250000
-net.core.somaxconn = 32768
 net.ipv4.tcp_syncookies = 1
-net.ipv4.ip_forward = 1
-net.ipv4.tcp_tw_reuse = 1
-net.ipv4.tcp_tw_recycle = 0
 net.ipv4.tcp_fin_timeout = 30
-net.ipv4.tcp_keepalive_time = 1200
-net.ipv4.ip_local_port_range = 10000 65000
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.ip_local_port_range = 1024 65000
 net.ipv4.tcp_max_syn_backlog = 16384
 net.ipv4.tcp_max_tw_buckets = 6000
-net.ipv4.tcp_fastopen = 3
 net.ipv4.route.gc_timeout = 100
 net.ipv4.tcp_syn_retries = 1
 net.ipv4.tcp_synack_retries = 1
-net.ipv4.tcp_mtu_probing = 1
-net.ipv4.tcp_max_orphans = 32768
+net.core.somaxconn = 32768
+net.core.netdev_max_backlog = 32768
 net.ipv4.tcp_timestamps = 0
-net.ipv4.tcp_rmem = 4096 87380 67108864
-net.ipv4.tcp_wmem = 4096 65536 67108864
-vm.swappiness = 10
+net.ipv4.tcp_max_orphans = 32768
 # forward ipv4
 net.ipv4.ip_forward = 1">>/etc/sysctl.conf
 	sysctl -p
@@ -549,25 +483,22 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
  ${Green_font_prefix}0.${Font_color_suffix} 升级脚本(请不要升级脚本,否则需重新配置)
 ————————————内核管理————————————
  ${Green_font_prefix}1.${Font_color_suffix} 安装 BBR/BBR魔改版内核
- ${Green_font_prefix}2.${Font_color_suffix} 安装 BBR/BBRPULS内核(centOS7专用)
+ ${Green_font_prefix}2.${Font_color_suffix} 安装 BBR/BBRPULS内核
  ${Green_font_prefix}3.${Font_color_suffix} 安装 Lotserver(锐速)内核(仅支持低版本内核)
 ————————————加速管理————————————
  ${Green_font_prefix}4.${Font_color_suffix} 使用BBR加速
  ${Green_font_prefix}5.${Font_color_suffix} 使用BBR魔改版加速(centos7/debian9使用)
- ${Green_font_prefix}6.${Font_color_suffix} 使用BBRPLUS加速(centos7/debian9使用)
+ ${Green_font_prefix}6.${Font_color_suffix} 使用BBRPLUS加速
  ${Green_font_prefix}7.${Font_color_suffix} 使用暴力BBR魔改版加速(不支持部分系统，centos7/debian9使用)
  ${Green_font_prefix}8.${Font_color_suffix} 使用Lotserver(锐速)加速(仅支持低版本内核)
  ${Green_font_prefix}9.${Font_color_suffix} 使用BBR魔改版加速(ubuntu16.04/18.04/18.10使用)
- ${Green_font_prefix}10.${Font_color_suffix} 使用BBRPLUS加速(ubuntu16.04/18.04/18.10使用)
- ${Green_font_prefix}11.${Font_color_suffix} 使用暴力BBR魔改版加速(不支持部分系统，ubuntu16.04/18.04/18.10使用)
+ ${Green_font_prefix}10.${Font_color_suffix} 使用暴力BBR魔改版加速(不支持部分系统，ubuntu16.04/18.04/18.10使用)
 ————————————杂项管理————————————
- ${Green_font_prefix}12.${Font_color_suffix} 卸载全部加速
- ${Green_font_prefix}13.${Font_color_suffix} 系统配置优化
- ${Green_font_prefix}14.${Font_color_suffix} 设置root用户登录
- ${Green_font_prefix}15.${Font_color_suffix} 安装libssl1.1(ubuntu16.04需先安装否则有报错)
- ${Green_font_prefix}16.${Font_color_suffix} 安装nginx(安装nginx1.14及以上支持TLSv1.3)
- ${Green_font_prefix}17.${Font_color_suffix} 安装linux-headers的BBRPLUS用内核（centos7专用，搭建wireguard需安装）
- ${Green_font_prefix}18.${Font_color_suffix}  退出脚本
+ ${Green_font_prefix}11.${Font_color_suffix} 卸载全部加速
+ ${Green_font_prefix}12.${Font_color_suffix} 系统配置优化
+ ${Green_font_prefix}13.${Font_color_suffix} 设置root用户登录
+ ${Green_font_prefix}14.${Font_color_suffix} 安装nginx(安装nginx1.14及以上支持TLSv1.3)
+ ${Green_font_prefix}15.${Font_color_suffix}  退出脚本
 ————————————————————————————————" && echo
 
 	check_status
@@ -578,7 +509,7 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
 		
 	fi
 echo
-read -p " 请输入数字 [0-18]:" num
+read -p " 请输入数字 [0-15]:" num
 case "$num" in
 	0)
 	Update_Shell
@@ -610,36 +541,27 @@ case "$num" in
 	9)
 	startbbrmod_ubuntu18.04
 	;;
-        10)
-	startbbrplusmod_ubuntu18.04
-	;;
-	11)
+	10)
 	startbbrmod_nanqinlang_ubuntu18.04
 	;;
-	12)
+	11)
 	remove_all
 	;;
-	13)
+	12)
 	optimizing_system
 	;;
-	14)
+	13)
 	Modify_root
 	;;
-	15)
-	install_libssl1.1
-	;;
-	16)
+	14)
 	install_nginx
 	;;
-	17)
-	centos-installbbr
-	;;
-	18)
+	15)
 	exit 1
 	;;
 	*)
 	clear
-	echo -e "${Error}:请输入正确数字 [0-18]"
+	echo -e "${Error}:请输入正确数字 [0-15]"
 	sleep 5s
 	start_menu
 	;;
