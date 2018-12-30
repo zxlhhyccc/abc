@@ -20,12 +20,11 @@ Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 #安装BBRPLUS内核
 installbbrplus(){
-	if [[ "${release}" == "centos" ]]; then
 	kernel_version="4.14.90"
+	if [[ "${release}" == "centos" ]]; then
 		yum install -y https://github.com/zxlhhyccc/bbrplus/raw/master/centos7/x86_64/kernel-4.14.90.rpm
 		yum remove -y kernel-headers
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
-	kernel_version="4.14.90"
 		mkdir bbrplus && cd bbrplus
 		wget -N --no-check-certificate https://github.com/cx9208/Linux-NetSpeed/raw/master/bbrplus/debian-ubuntu/x64/linux-headers-4.14.90.deb
 		wget -N --no-check-certificate https://github.com/cx9208/Linux-NetSpeed/raw/master/bbrplus/debian-ubuntu/x64/linux-image-4.14.90.deb
