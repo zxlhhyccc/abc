@@ -828,6 +828,7 @@ check_status(){
 	fi
 }
 
+
 #############系统检测组件#############
 check_sys
 check_version
