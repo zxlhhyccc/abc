@@ -24,7 +24,15 @@ installbbrplus(){
 	kernel_version="4.14.90"
 		yum install -y https://github.com/zxlhhyccc/bbrplus/raw/master/centos7/x86_64/kernel-4.14.90.rpm
 		yum remove -y kernel-headers
+	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
+		mkdir bbrplus && cd bbrplus
+		wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/${bit}/linux-headers-${kernel_version}.deb
+		wget -N --no-check-certificate http://${github}/bbrplus/debian-ubuntu/${bit}/linux-image-${kernel_version}.deb
+		dpkg -i linux-headers-${kernel_version}.deb
+		dpkg -i linux-image-${kernel_version}.deb
+		cd .. && rm -rf bbrplus
 	fi
+	
 	detele_kernel
 	BBR_grub
 	echo -e "${Tip} 重启VPS后，请重新运行脚本开启${Red_font_prefix}BBR/BBR魔改版${Font_color_suffix}"
@@ -249,32 +257,13 @@ startbbrmod(){
 	echo -e "${Info}魔改版BBR启动成功！"
 }
 
-#编译并启用BBRPULS(cent0s7/debian9)
+#编译并启用BBRPULS
 startbbrplusmod(){
 	remove_all
-	if [[ "${release}" == "centos" ]]; then
         echo -e "启用模块..."
-	else
-		apt-get update
-		if [[ "${release}" == "ubuntu" && "${version}" = "14" ]]; then
-			apt-get -y install build-essential
-			apt-get -y install software-properties-common
-			add-apt-repository ppa:ubuntu-toolchain-r/test -y
-			apt-get update
-		fi
-	        apt-get -y install make gcc libelf-dev
-	        mkdir bbrmod && cd bbrmod
-		wget -N --no-check-certificate https://raw.githubusercontent.com/zxlhhyccc/bbrplus-debian/master/tcp_bbrplus.c
-		echo "obj-m:=tcp_bbrplus.o" > Makefile
-		make -C /lib/modules/$(uname -r)/build M=`pwd` modules CC=/usr/bin/gcc
-		install tcp_bbrplus.ko /lib/modules/$(uname -r)/kernel
-		cp -rf ./tcp_bbrplus.ko /lib/modules/$(uname -r)/kernel/net/ipv4
-		depmod -a
-	fi 
         echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
         echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
 	sysctl -p
-	cd .. && rm -rf bbrmod
 	echo -e "${Info}BBRPLUS启动成功！"
 }
 #编译并启用BBR魔改(ubuntu18.04)
