@@ -487,8 +487,8 @@ echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ve
  ${Green_font_prefix}3.${Font_color_suffix} 安装 Lotserver(锐速)内核(仅支持低版本内核)
 ————————————加速管理————————————
  ${Green_font_prefix}4.${Font_color_suffix} 使用BBR加速
- ${Green_font_prefix}5.${Font_color_suffix} 使用BBR魔改版加速(centos7/debian9使用)
- ${Green_font_prefix}6.${Font_color_suffix} 使用BBRPLUS加速
+ ${Green_font_prefix}5.${Font_color_suffix} 使用BBRPLUS加速
+ ${Green_font_prefix}6.${Font_color_suffix} 使用BBR魔改版加速(centos7/debian9使用)
  ${Green_font_prefix}7.${Font_color_suffix} 使用暴力BBR魔改版加速(不支持部分系统，centos7/debian9使用)
  ${Green_font_prefix}8.${Font_color_suffix} 使用Lotserver(锐速)加速(仅支持低版本内核)
  ${Green_font_prefix}9.${Font_color_suffix} 使用BBR魔改版加速(ubuntu16.04/18.04/18.10使用)
@@ -527,10 +527,10 @@ case "$num" in
 	startbbr
 	;;
 	5)
-	startbbrmod
+	startbbrplusmod
 	;;
 	6)
-	startbbrplusmod
+	startbbrmod
 	;;
 	7)
 	startbbrmod_nanqinlang
