@@ -1,10 +1,6 @@
 # abc
 
 CentOS6和CentOS7 一键更换内核，一键安装锐速[lotServer]
-
-CentOS6和CentOS7 一键更换内核，一键安装锐速[lotServer][serverSpeeder ]
-
-CentOS6和CentOS7 一键更换内核，完成后会重启
 ````
 wget --no-check-certificate https://www.zhangfangzhou.cn/sh/ruisu.sh
 bash ruisu.sh
