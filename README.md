@@ -2,14 +2,17 @@
 
 CentOS6和CentOS7 一键更换内核，一键安装锐速[lotServer]
 ````
-wget --no-check-certificate https://www.zhangfangzhou.cn/sh/ruisu.sh
+#wget --no-check-certificate https://www.zhangfangzhou.cn/sh/ruisu.sh
+wget --no-check-certificate https://raw.githubusercontent.com/zxlhhyccc/abc/master/ruisu.sh
 bash ruisu.sh
 `````
 手动更换内核
 CentOS6更换内核
 `````
-rpm -ivh http://file.asuhu.com/kernel/kernel-firmware-2.6.32-504.3.3.el6.noarch.rpm
-rpm -ivh http://file.asuhu.com/kernel/kernel-2.6.32-504.3.3.el6.x86_64.rpm --force
+#rpm -ivh http://file.asuhu.com/kernel/kernel-firmware-2.6.32-504.3.3.el6.noarch.rpm
+rpm -ivh https://github.com/zxlhhyccc/abc/raw/master/centos6-7/kernel-firmware-2.6.32-504.3.3.el6.noarch.rpm
+#rpm -ivh http://file.asuhu.com/kernel/kernel-2.6.32-504.3.3.el6.x86_64.rpm --force
+rpm -ivh https://github.com/zxlhhyccc/abc/raw/master/centos6-7/kernel-2.6.32-504.3.3.el6.x86_64.rpm --force
 `````
 查看内核版本
 ````
@@ -37,7 +40,8 @@ uname -r
 `````
 CentOS7更换内核
 ````
-rpm -ivh http://file.asuhu.com/kernel/kernel-3.10.0-229.1.2.el7.x86_64.rpm --force
+#rpm -ivh http://file.asuhu.com/kernel/kernel-3.10.0-229.1.2.el7.x86_64.rpm --force
+rpm -ivh https://github.com/zxlhhyccc/abc/raw/master/centos6-7/kernel-3.10.0-229.1.2.el7.x86_64.rpm --force
 `````
 查看内核
 `````
